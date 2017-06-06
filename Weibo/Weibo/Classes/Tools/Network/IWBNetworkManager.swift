@@ -18,11 +18,29 @@ class IWBNetworkManager: AFHTTPSessionManager {
     // singleton
     static let shared = IWBNetworkManager()
     
-    func reuqest(method: IWBHTTPMethod, URLString: String, parameters: [String : AnyObject],
-                 completion: @escaping (Any?, Bool)->()) {
+    var access_token: String? = "2.00Sr38RGCNeKrB53a5e0e71f0jKVMY"
+    
+    func requestWithToken(method: IWBHTTPMethod = .IWBHTTPMethodGet, URLString: String,
+                          parameters: [String : AnyObject]?, completion: @escaping (AnyObject?, Bool)->()) {
+        
+        guard let token = access_token else {
+            completion(nil, false)
+            return;
+        }
+        var parameters = parameters
+        if parameters == nil {
+            parameters = [String : AnyObject]()
+        }
+        
+        parameters!["access_token"] = token as AnyObject;
+        request(URLString: URLString, parameters: parameters, completion: completion);
+    }
+    
+    func request(method: IWBHTTPMethod = .IWBHTTPMethodGet, URLString: String,
+                 parameters: [String : AnyObject]?, completion: @escaping (AnyObject?, Bool)->()) {
         
         let success = { (task: URLSessionDataTask, json: Any?)->() in
-            completion(json, true)
+            completion(json as AnyObject, true)
         }
         let failure = { (task: URLSessionDataTask?, error: Error)->() in
             completion(nil, false)

@@ -10,4 +10,12 @@ import Foundation
 
 extension IWBNetworkManager {
     
+    func statusList(completion: @escaping (_ statuses: [[String : AnyObject]]?, _ success: Bool)->()) {
+        let URLString = "https://api.weibo.com/2/statuses/home_timeline.json"
+    
+        requestWithToken(URLString: URLString, parameters: nil) { (json, success) in
+            let result = json?["statuses"] as? [[String : AnyObject]]
+            completion(result, success)
+        }
+    }
 }
